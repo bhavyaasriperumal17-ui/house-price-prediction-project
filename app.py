@@ -5,9 +5,9 @@ app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+@app.route('/login')
+def login():
+    return render_template('login.html')
 
 
 @app.route('/predict', methods=['POST'])
