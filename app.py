@@ -1,71 +1,37 @@
-from flask import Flask, render_template, request, redirect, url_for
-import os
+from flask import Flask, render_template, request
+import numpy as np
+import pickle
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
 
-# 🔹 Store users (temporary)
-users = {}
+# Load model (make sure model.pkl exists)
+model = pickle.load(open('model.pkl', 'rb'))
 
-
-# 🔹 HOME
 @app.route('/')
 def home():
-    return redirect(url_for('login'))
-
-
-# 🔹 REGISTER PAGE
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-
-        if username in users:
-            return render_template('register.html', error="User already exists")
-
-        users[username] = password
-        return redirect(url_for('login'))
-
-    return render_template('register.html')
-
-
-# 🔹 LOGIN PAGE
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-
-        if username in users and users[username] == password:
-            return redirect(url_for('predict_page'))
-        else:
-            return render_template('login.html', error="Invalid credentials")
-
-    return render_template('login.html')
-
-
-# 🔹 PREDICTION PAGE
-@app.route('/predict_page')
-def predict_page():
     return render_template('index.html')
 
-
-# 🔹 PREDICT
 @app.route('/predict', methods=['POST'])
 def predict():
-    area = float(request.form['area'])
-    bedrooms = float(request.form['bedrooms'])
-    bathrooms = float(request.form['bathrooms'])
-    location = float(request.form['location'])
+    try:
+        # Get all 3 inputs
+        feature1 = float(request.form['feature1'])
+        feature2 = float(request.form['feature2'])
+        feature3 = float(request.form['feature3'])
 
-    prediction = (area * 100) + (bedrooms * 50000) + (bathrooms * 30000) + (location * 20000)
+        # Convert to array
+        final_features = np.array([[feature1, feature2, feature3]])
 
-    return render_template('index.html',
-                           prediction_text=f"Estimated Price: ₹ {prediction}")
+        # Predict
+        prediction = model.predict(final_features)
 
+        return render_template('index.html',
+                               prediction_text=f"Predicted Price: {prediction[0]}")
 
-# 🔥 RENDER FIX
+    except Exception as e:
+        return render_template('index.html',
+                               prediction_text="Error: Fill all 3 values correctly!")
+
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
+    app.run(debug=True)
     app.run(host="0.0.0.0", port=port)
