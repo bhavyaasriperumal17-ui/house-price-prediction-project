@@ -1,58 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Prediction</title>
-
-    <style>
-    body {
-        font-family: Arial;
-        text-align: center;
-        background: linear-gradient(to right, #a1c4fd, #c2e9fb);
-    }
-
-    form {
-        background: white;
-        padding: 25px;
-        display: inline-block;
-        border-radius: 12px;
-        box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-    }
-
-    input {
-        width: 200px;
-        padding: 10px;
-        margin: 8px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-    }
-
-    button {
-        padding: 10px 20px;
-        background-color: #FF5722;
-        color: white;
-        border: none;
-        border-radius: 5px;
-    }
-    </style>
-
+    <title>House Price Prediction</title>
 </head>
 <body>
 
-<div style="margin-top:100px;">
+    <h2>House Price Prediction</h2>
 
-<h2>House Price Prediction</h2>
+    <form action="/predict" method="post">
+        <input type="number" name="f1" placeholder="Feature 1" required><br><br>
+        <input type="number" name="f2" placeholder="Feature 2" required><br><br>
+        <input type="number" name="f3" placeholder="Feature 3" required><br><br>
 
-<form action="/predict" method="post">
-    <input type="text" name="area" placeholder="Area"><br>
-    <input type="text" name="bedrooms" placeholder="Bedrooms"><br>
-    <input type="text" name="age" placeholder="Age"><br>
+        <button type="submit">Predict</button>
+    </form>
 
-    <button type="submit">Predict</button>
-</form>
-
-<h3>{{ prediction_text }}</h3>
-
-</div>
+    <h3>{{ prediction_text }}</h3>
 
 </body>
 </html>
