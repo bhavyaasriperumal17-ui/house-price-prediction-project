@@ -1,55 +1,37 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-# Temporary storage (for demo)
-users = {}
-
+# Home → Login page
 @app.route('/')
-def home():
+def login():
     return render_template('login.html')
 
-# SIGNUP
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
 
-        users[username] = password
-        return redirect(url_for('home'))
-
-    return render_template('signup.html')
-
-# LOGIN
-@app.route('/login', methods=['POST'])
-def login():
-    username = request.form['username']
-    password = request.form['password']
-
-    if username in users and users[username] == password:
-        return redirect(url_for('predict_page'))
-    else:
-        return "Invalid Login ❌"
-
-# PREDICTION PAGE
-@app.route('/predict_page')
+# After login → Prediction page
+@app.route('/predict_page', methods=['POST'])
 def predict_page():
     return render_template('index.html')
 
-# PREDICT FUNCTION
+
+# Prediction logic
 @app.route('/predict', methods=['POST'])
 def predict():
-   area = float(request.form['area'])
-bedrooms = float(request.form['bedrooms'])
-bathrooms = float(request.form['bathrooms'])
+    try:
+        # Get form values
+        area = float(request.form['area'])
+        bedrooms = float(request.form['bedrooms'])
+        bathrooms = float(request.form['bathrooms'])
 
-features = [[area, bedrooms, bathrooms]]
-prediction = model.predict(features)
-    result = f1 + f2 + f3  # dummy prediction (replace with model)
+        # Dummy prediction (replace with ML model later)
+        result = area * 1000 + bedrooms * 50000 + bathrooms * 30000
 
-    return render_template('index.html',
-                           prediction_text=f"Predicted Price: {result}")
+        return render_template('index.html', prediction_text=f"Predicted Price: ₹ {result}")
 
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+
+# Run app
 if __name__ == "__main__":
     app.run(debug=True)
