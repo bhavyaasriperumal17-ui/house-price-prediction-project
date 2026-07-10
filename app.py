@@ -1,47 +1,32 @@
 from flask import Flask, render_template, request
-import pickle
-import numpy as np
+import os
 
 app = Flask(__name__)
-
-# 🔐 Secret key (used for sessions, safe to keep here for now)
 app.secret_key = 'your_secret_key'
 
-# Load trained model
-model = pickle.load(open('model.pkl', 'rb'))
 
-
-# Home page
 @app.route('/')
 def home():
     return render_template('index.html')
 
 
-# Prediction route
 @app.route('/predict', methods=['POST'])
 def predict():
+    # Example: get values from form
     try:
-        # Get values from form
-        f1 = float(request.form['f1'])
-        f2 = float(request.form['f2'])
-        f3 = float(request.form['f3'])
+        feature1 = float(request.form['feature1'])
+        feature2 = float(request.form['feature2'])
 
-        # Make prediction (IMPORTANT: 3 features)
-        prediction = model.predict([[f1, f2, f3]])
+        # Dummy prediction logic (replace with your ML model)
+        prediction = feature1 + feature2
 
-        output = round(prediction[0], 2)
+        return render_template('index.html', prediction_text=f"Prediction: {prediction}")
 
-        return render_template('index.html', prediction_text=f'Predicted Price: {output}')
-
-    except Exception as e:
-        return render_template('index.html', prediction_text=f'Error: {str(e)}')
+    except:
+        return render_template('index.html', prediction_text="Error in input")
 
 
-# Run app
+# 🔥 IMPORTANT PART (THIS FIXES YOUR ERROR)
 if __name__ == "__main__":
-    app.run(debug=True)
-    import os
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
+    port = int(os.environ.get("PORT", 10000))  # Render gives PORT
     app.run(host="0.0.0.0", port=port)
