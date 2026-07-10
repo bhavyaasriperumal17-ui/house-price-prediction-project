@@ -28,7 +28,7 @@ def login():
         password = request.form['password']
 
         # Simple login (you can change later)
-        if username == "admin" and password == "admin":
+         if username == "admin" and password == "admin":
             return redirect(url_for('predict_page'))
         else:
             return render_template('login.html', error="Invalid username or password")
