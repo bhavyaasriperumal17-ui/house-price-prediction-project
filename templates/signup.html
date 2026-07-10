@@ -2,54 +2,16 @@
 <html>
 <head>
     <title>Signup</title>
-
-    <style>
-    body {
-        font-family: Arial;
-        text-align: center;
-        background: linear-gradient(to right, #ff9a9e, #fad0c4);
-    }
-
-    form {
-        background: white;
-        padding: 25px;
-        display: inline-block;
-        border-radius: 12px;
-        box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-    }
-
-    input {
-        width: 200px;
-        padding: 10px;
-        margin: 8px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-    }
-
-    button {
-        padding: 10px 20px;
-        background-color: #2196F3;
-        color: white;
-        border: none;
-        border-radius: 5px;
-    }
-    </style>
-
 </head>
-<body>
-
-<div style="margin-top:100px;">
+<body style="text-align:center; background:#fbc2eb;">
 
 <h2>Create Account</h2>
 
-<form action="/register" method="post">
-    <input type="text" name="username" placeholder="Username" required><br>
-    <input type="password" name="password" placeholder="Password" required><br>
-
+<form method="POST">
+    <input type="text" name="username" placeholder="Username" required><br><br>
+    <input type="password" name="password" placeholder="Password" required><br><br>
     <button type="submit">Signup</button>
 </form>
-
-</div>
 
 </body>
 </html>
