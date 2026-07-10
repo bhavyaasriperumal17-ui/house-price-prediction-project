@@ -40,10 +40,12 @@ def predict_page():
 # PREDICT FUNCTION
 @app.route('/predict', methods=['POST'])
 def predict():
-    f1 = float(request.form['feature1'])
-    f2 = float(request.form['feature2'])
-    f3 = float(request.form['feature3'])
+   area = float(request.form['area'])
+bedrooms = float(request.form['bedrooms'])
+bathrooms = float(request.form['bathrooms'])
 
+features = [[area, bedrooms, bathrooms]]
+prediction = model.predict(features)
     result = f1 + f2 + f3  # dummy prediction (replace with model)
 
     return render_template('index.html',
