@@ -5,12 +5,13 @@ import pickle
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
-# Load model (make sure model.pkl is in same folder)
-model = None
+# 🔹 Load ML model (make sure model.pkl is in same folder)
 try:
     model = pickle.load(open('model.pkl', 'rb'))
+    print("Model loaded successfully")
 except:
-    print("Model not found, using dummy prediction")
+    model = None
+    print("Model not found, using dummy logic")
 
 
 # 🔹 HOME → redirect to login
@@ -26,40 +27,51 @@ def login():
         username = request.form['username']
         password = request.form['password']
 
-        # simple login (you can change)
+        # Simple login (you can change later)
         if username == "admin" and password == "admin":
             return redirect(url_for('predict_page'))
         else:
-            return render_template('login.html', error="Invalid Credentials")
+            return render_template('login.html', error="Invalid username or password")
 
     return render_template('login.html')
 
 
-# 🔹 PREDICTION PAGE
+# 🔹 PREDICTION PAGE (FORM)
 @app.route('/predict_page')
 def predict_page():
     return render_template('index.html')
 
 
-# 🔹 PREDICT FUNCTION
+# 🔹 PREDICT FUNCTION (USER INPUT)
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        f1 = float(request.form['feature1'])
-        f2 = float(request.form['feature2'])
+        # Get values from form
+        area = float(request.form['area'])
+        bedrooms = float(request.form['bedrooms'])
+        bathrooms = float(request.form['bathrooms'])
+        location = float(request.form['location'])
 
+        # If model exists → use it
         if model:
-            prediction = model.predict([[f1, f2]])[0]
+            prediction = model.predict([[area, bedrooms, bathrooms, location]])[0]
         else:
-            prediction = f1 + f2  # dummy
+            # Dummy logic (temporary)
+            prediction = (area * 100) + (bedrooms * 50000) + (bathrooms * 30000) + (location * 20000)
 
-        return render_template('index.html', prediction_text=f"Prediction: {prediction}")
+        return render_template(
+            'index.html',
+            prediction_text=f"Estimated Price: ₹ {round(prediction, 2)}"
+        )
 
-    except:
-        return render_template('index.html', prediction_text="Error in input")
+    except Exception as e:
+        return render_template(
+            'index.html',
+            prediction_text="Error: Please enter valid inputs"
+        )
 
 
-# 🔥 IMPORTANT FOR RENDER
+# 🔥 IMPORTANT FOR RENDER DEPLOYMENT
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
