@@ -7,21 +7,15 @@
 
     <h2>Enter Details</h2>
 
-    <form action="/predict" method="POST">
+   <form action="/predict" method="post">
+    <input type="number" name="area" placeholder="Area (sqft)" required>
+    <input type="number" name="bedrooms" placeholder="Bedrooms" required>
+    <input type="number" name="bathrooms" placeholder="Bathrooms" required>
 
-        <label>Feature 1:</label><br>
-        <input type="number" name="feature1" required><br><br>
+    <button type="submit">Predict Price</button>
+</form>
 
-        <label>Feature 2:</label><br>
-        <input type="number" name="feature2" required><br><br>
-
-        <label>Feature 3:</label><br>
-        <input type="number" name="feature3" required><br><br>
-
-        <button type="submit">Predict</button>
-    </form>
-
-    <h3>{{ prediction_text }}</h3>
-
+<h2>{{ prediction_text }}</h2>
+     
 </body>
 </html>
