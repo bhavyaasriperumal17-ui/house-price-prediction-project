@@ -1,81 +1,42 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request
 import pickle
+import numpy as np
 
 app = Flask(__name__)
 
-# Load ML model
+# 🔐 Secret key (used for sessions, safe to keep here for now)
+app.secret_key = 'your_secret_key'
+
+# Load trained model
 model = pickle.load(open('model.pkl', 'rb'))
 
-# Temporary user storage (no database)
-users = {}
 
-# =========================
-# LOGIN PAGE
-# =========================
+# Home page
 @app.route('/')
-def login():
-    return render_template('login.html')
-
-# =========================
-# SIGNUP PAGE
-# =========================
-@app.route('/signup')
-def signup():
-    return render_template('signup.html')
-
-# =========================
-# REGISTER USER
-# =========================
-@app.route('/register', methods=['POST'])
-def register():
-    username = request.form['username']
-    password = request.form['password']
-
-    users[username] = password
-    return redirect(url_for('login'))
-
-# =========================
-# LOGIN VALIDATION
-# =========================
-@app.route('/login', methods=['POST'])
-def login_user():
-    username = request.form['username']
-    password = request.form['password']
-
-    if username in users and users[username] == password:
-        return redirect(url_for('home'))
-    else:
-        return render_template('login.html', error="Invalid Credentials")
-
-# =========================
-# HOME PAGE
-# =========================
-@app.route('/home')
 def home():
     return render_template('index.html')
 
-# =========================
-# PREDICTION
-# =========================
+
+# Prediction route
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        area = float(request.form['area'])
-        bedrooms = float(request.form['bedrooms'])
-        age = float(request.form['age'])
+        # Get values from form
+        f1 = float(request.form['f1'])
+        f2 = float(request.form['f2'])
+        f3 = float(request.form['f3'])
 
-        prediction = model.predict([[area, bedrooms, age]])
+        # Make prediction (IMPORTANT: 3 features)
+        prediction = model.predict([[f1, f2, f3]])
+
         output = round(prediction[0], 2)
 
-        return render_template('index.html',
-                               prediction_text=f"Predicted Price: {output}")
+        return render_template('index.html', prediction_text=f'Predicted Price: {output}')
 
     except Exception as e:
-        return render_template('index.html',
-                               prediction_text=f"Error: {str(e)}")
+        return render_template('index.html', prediction_text=f'Error: {str(e)}')
 
-# =========================
-# RUN
-# =========================
+
+# Run app
 if __name__ == "__main__":
     app.run(debug=True)
